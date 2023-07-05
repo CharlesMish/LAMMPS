@@ -216,9 +216,9 @@ with open('in.pour', 'w') as g:
         for j in range(i, 2 * sizedisc):
             E_value = ((1 - CAM_v * CAM_v) / (Earray[i]) + (1 - SE_v * SE_v) / Earray[j]) ** (-1)
             g.write('pair_coeff ' + str(i + 1) + ' ' + str(j + 1) + ' hertz/material ' + str(
-                E_value) + ' 0.1 0.3 tangential mindlin NULL 1.0 0.4\n')
+                E_value) + ' 0.05 0.3 tangential mindlin NULL 1.0 0.4\n')
     g.write('\n')
-    g.write('timestep	0.0005')
+    g.write('timestep	0.00005')
     g.write('\n')
     g.write('neigh_modify one 10000')
     g.write('\n')
@@ -244,7 +244,6 @@ with open('in.pour', 'w') as g:
     g.write('\n')
     g.write('dump_modify	2 pad 5')
     g.write('\n')
-    # Write gravity here
     cam_string = ' '.join(str(j) for j in range(1, sizedisc + 1))
     SE_string = ' '.join(str(j) for j in range(sizedisc + 1, 2 * sizedisc + 1))
     g.write('group CAM type ' + str(cam_string))
@@ -254,6 +253,9 @@ with open('in.pour', 'w') as g:
     g.write('fix        4 CAM addforce 0 0 -' + str(CAM_p_force))
     g.write('\n')
     g.write('fix		4 SE addforce 0 0 -' + str(SE_p_force))
+    g.write('\n')
+    # Write a restart file every 10000 steps
+    g.write('restart 10000 restart.*')
     g.write('\n')
     g.write('run		50000')
     g.write('\n')
